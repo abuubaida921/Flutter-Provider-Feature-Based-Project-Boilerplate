@@ -237,7 +237,7 @@ class SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       key: _globalKey,
-      body: Text('data'),
+      body: Center(child: Text('Splash Screen data')),
     );
     //   body: Provider.of<SplashController>(context).hasConnection ?
     //   Center(child: Column(mainAxisSize: MainAxisSize.min, children: [

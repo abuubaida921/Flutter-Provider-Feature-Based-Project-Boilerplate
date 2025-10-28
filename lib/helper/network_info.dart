@@ -12,26 +12,38 @@ class NetworkInfo {
   NetworkInfo(this.connectivity);
 
   Future<bool> get isConnected async {
-    ConnectivityResult result = await connectivity.checkConnectivity();
-    return result != ConnectivityResult.none;
+    final results = await connectivity.checkConnectivity();
+    if (results.isEmpty) return false;
+    return !results.contains(ConnectivityResult.none);
   }
 
   static void checkConnectivity(BuildContext context) {
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if(Provider.of<SplashController>(Get.context!, listen: false).firstTimeConnectionCheck) {
-        Provider.of<SplashController>(Get.context!, listen: false).setFirstTimeConnectionCheck(false);
-      }else {
-        bool isNotConnected = result == ConnectivityResult.none;
-        isNotConnected ? const SizedBox() : ScaffoldMessenger.of(Get.context!).hideCurrentSnackBar();
-        ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
+    final Connectivity connectivity = Connectivity();
+
+    connectivity.onConnectivityChanged.listen((List<ConnectivityResult> results) {
+      final bool isNotConnected = results.contains(ConnectivityResult.none) || results.isEmpty;
+
+      final splashController = Provider.of<SplashController>(Get.context!, listen: false);
+
+      if (splashController.firstTimeConnectionCheck) {
+        splashController.setFirstTimeConnectionCheck(false);
+        return;
+      }
+
+      // Hide previous snack bar
+      isNotConnected? SizedBox() : ScaffoldMessenger.of(Get.context!).hideCurrentSnackBar();
+
+      // Show connection status
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        SnackBar(
           backgroundColor: isNotConnected ? Colors.red : Colors.green,
           duration: Duration(seconds: isNotConnected ? 6000 : 3),
           content: Text(
-            isNotConnected ? 'no connection' : 'connected',
+            isNotConnected ? 'No connection' : 'Connected',
             textAlign: TextAlign.center,
           ),
-        ));
-      }
+        ),
+      );
     });
   }
 }

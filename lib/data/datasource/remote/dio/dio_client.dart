@@ -23,7 +23,7 @@ class DioClient {
         required this.sharedPreferences,
       }) {
     token = sharedPreferences.getString(AppConstants.userLoginToken);
-    countryCode = sharedPreferences.getString(AppConstants.countryCode);
+    countryCode = sharedPreferences.getString(AppConstants.countryCode) ?? AppConstants.languages[0].countryCode;
     if (kDebugMode) {
       print("Token: $token");
     }

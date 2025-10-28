@@ -21,6 +21,7 @@ Future<void> main() async {
   await di.init();
 
   runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => di.sl<ThemeController>()),
     ChangeNotifierProvider(create: (context) => di.sl<OnBoardingController>()),
     ChangeNotifierProvider(create: (context) => di.sl<AuthController>()),
     ChangeNotifierProvider(create: (context) => di.sl<SplashController>()),
